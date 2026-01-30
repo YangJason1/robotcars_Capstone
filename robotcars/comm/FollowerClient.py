@@ -8,7 +8,7 @@ class FollowerClient(MQTTClient):
         print(f'{self.id} received: {topic} - {msg}')
         self.publish_to_robot('leader', msg)
 
-FollowerClient('follower', "10.183.37.83").start()
+FollowerClient('follower', "10.183.37.93").start()
 
 while True:
     time.sleep(2)

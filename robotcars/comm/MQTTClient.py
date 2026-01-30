@@ -16,7 +16,7 @@ class MQTTClient:
         self.client.on_disconnect = self.on_disconnect
 
     def start(self):
-        self.client.connect(self.broker_ip, self.broker_ip)
+        self.client.connect(self.broker_ip, self.broker_port)
         self.client.loop_start()
     
     def stop(self):

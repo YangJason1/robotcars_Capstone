@@ -1,21 +1,24 @@
 import paho.mqtt.client as mqtt
 import time
-import json
+import os
 
-def on_connect(client, userdata, flags, rc):
-    print("Leader connected")
-    client.subscribe("follower_update")
+BROKER = "localhost"
+TOPIC = "stress/test"
 
-def on_message(client, userdata, msg):
-    print("Leader received:", msg.topic, msg.payload.decode())
+payload_size = 100_000  # 100 KB
+payload = os.urandom(payload_size)
 
-client = mqtt.Client(client_id="leader")
-client.on_connect = on_connect
-client.on_message = on_message
-
-client.connect("localhost", 1883)
+client = mqtt.Client()
+client.connect(BROKER, 1883)
 client.loop_start()
 
-while True:
-    msg = input('Enter a message to send\n')
-    client.publish("control_command", json.dumps({"message": msg}))
+count = 0
+start = time.time()
+
+while time.time() - start < 10:  # run for 10 seconds
+    client.publish(TOPIC, payload, qos=0)
+    count += 1
+
+duration = time.time() - start
+print(f"Sent {count} messages")
+print(f"Throughput ≈ {(count * payload_size) / duration / 1e6:.2f} MB/s")
