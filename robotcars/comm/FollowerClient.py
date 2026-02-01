@@ -6,9 +6,11 @@ class FollowerClient(MQTTClient):
     @override
     def handle_message(self, client, topic, msg):
         print(f'{self.id} received: {topic} - {msg}')
-        self.publish_to_robot('leader', msg)
+        # self.publish_to_robot('leader', msg)
 
-FollowerClient('follower', "10.183.37.93").start()
+fc = FollowerClient('Robot1', "10.183.37.93")
+fc.start()
 
 while True:
-    time.sleep(2)
+    fc.publish_to_robot('Leader', {'heartbeat':time.time()})
+    time.sleep(1)
